@@ -93,13 +93,4 @@ Recovery tip:
 - Memory usage prefers `C_AddOns` API with fallback to legacy global APIs.
 - Options panel registers through modern `Settings` API when available, with `InterfaceOptions` fallback.
 
-## Verification Checklist (In-Game)
 
-- `/reload` produces no Lua errors.
-- All five elements render and update.
-- Each element can be moved independently while unlocked.
-- Positions persist through `/reload`.
-- Style changes apply immediately and persist.
-- `/mb toggle` and `/mb reset` work for each element and `all`.
-- Broker text appears in LDB display launchers when `LibDataBroker-1.1` is present.
-- Standalone UI still works fully when LDB is absent.

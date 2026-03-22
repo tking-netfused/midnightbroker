@@ -68,6 +68,15 @@ local function buildAddonMemoryList()
     return total, entries
 end
 
+local function getVisibleEntryCount(mode, totalCount)
+    if mode == "all" then
+        return totalCount
+    elseif mode == "top25" then
+        return math.min(25, totalCount)
+    end
+    return math.min(10, totalCount)
+end
+
 function MemoryElement:Create()
     local frame = MB.BaseElement:Create("memory", "Memory")
 
@@ -85,6 +94,8 @@ function MemoryElement:Create()
 
     function frame:OnHoverEnter()
         local totalKB, entries = buildAddonMemoryList()
+        local config = MB.DB:GetElementConfig("memory")
+        local visibleCount = getVisibleEntryCount(config.memoryTooltipMode, #entries)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine("Memory Usage")
@@ -93,8 +104,14 @@ function MemoryElement:Create()
         if #entries == 0 then
             GameTooltip:AddLine("No loaded addons", 0.8, 0.8, 0.8)
         else
+            if visibleCount < #entries then
+                GameTooltip:AddLine(string.format("Showing top %d of %d addons", visibleCount, #entries), 0.8, 0.8, 0.8)
+            else
+                GameTooltip:AddLine(string.format("Showing all %d addons", #entries), 0.8, 0.8, 0.8)
+            end
             GameTooltip:AddLine(" ")
-            for _, entry in ipairs(entries) do
+            for index = 1, visibleCount do
+                local entry = entries[index]
                 GameTooltip:AddDoubleLine(entry.name, formatMemory(entry.usage), 0.85, 0.85, 0.85, 1, 1, 1)
             end
         end

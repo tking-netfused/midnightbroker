@@ -105,6 +105,9 @@ function MB.DB:SanitizeElementStyle(elementId)
     local config = self:GetElementConfig(elementId)
     config.font = type(config.font) == "string" and config.font ~= "" and config.font or defaults.font
     config.fontSize = type(config.fontSize) == "number" and clamp(config.fontSize, 6, 64) or defaults.fontSize
+    if not isOptionValue(MB.Constants.TEXT_JUSTIFY_OPTIONS, config.textJustify) then
+        config.textJustify = defaults.textJustify
+    end
     config.showLabel = sanitizeBoolean(config.showLabel, defaults.showLabel)
     config.showBackground = sanitizeBoolean(config.showBackground, defaults.showBackground)
     config.showBorder = sanitizeBoolean(config.showBorder, defaults.showBorder)
@@ -117,6 +120,21 @@ function MB.DB:SanitizeElementStyle(elementId)
         end
         if not isOptionValue(MB.Constants.DATETIME_LAYOUT_OPTIONS, config.dateTimeLayout) then
             config.dateTimeLayout = defaults.dateTimeLayout
+        end
+    elseif elementId == "zone" then
+        if not isOptionValue(MB.Constants.ZONE_LAYOUT_OPTIONS, config.zoneLayout) then
+            config.zoneLayout = defaults.zoneLayout
+        end
+    elseif elementId == "memory" then
+        if not isOptionValue(MB.Constants.MEMORY_TOOLTIP_OPTIONS, config.memoryTooltipMode) then
+            config.memoryTooltipMode = defaults.memoryTooltipMode
+        end
+    elseif elementId == "coords" then
+        config.coordsDecimals = type(config.coordsDecimals) == "number" and clamp(math.floor(config.coordsDecimals + 0.5), 0, 2) or defaults.coordsDecimals
+        config.coordsUpdateInterval = type(config.coordsUpdateInterval) == "number" and clamp(config.coordsUpdateInterval, 0.05, 1.0) or defaults.coordsUpdateInterval
+    elseif elementId == "gold" then
+        if not isOptionValue(MB.Constants.GOLD_FORMAT_OPTIONS, config.goldFormat) then
+            config.goldFormat = defaults.goldFormat
         end
     end
     config.alpha = type(config.alpha) == "number" and clamp(config.alpha, 0, 1) or defaults.alpha
@@ -136,6 +154,7 @@ function MB.DB:ResetElementStyle(elementId)
     local config = self:GetElementConfig(elementId)
     config.font = defaults.font
     config.fontSize = defaults.fontSize
+    config.textJustify = defaults.textJustify
     config.showLabel = defaults.showLabel
     config.showBackground = defaults.showBackground
     config.showBorder = defaults.showBorder
@@ -147,6 +166,12 @@ function MB.DB:ResetElementStyle(elementId)
     end
     if defaults.dateTimeLayout then
         config.dateTimeLayout = defaults.dateTimeLayout
+    end
+    if defaults.coordsDecimals then
+        config.coordsDecimals = defaults.coordsDecimals
+    end
+    if defaults.coordsUpdateInterval then
+        config.coordsUpdateInterval = defaults.coordsUpdateInterval
     end
     config.alpha = defaults.alpha
     config.scale = defaults.scale

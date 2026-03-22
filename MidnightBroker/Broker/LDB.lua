@@ -5,6 +5,18 @@ MB.LDB = {
 }
 MB:RegisterModule("LDB", MB.LDB)
 
+local function formatNumberWithCommas(value)
+    local formatted = tostring(math.floor(value or 0))
+    while true do
+        local replaced, count = string.gsub(formatted, "^(-?%d+)(%d%d%d)", "%1,%2")
+        formatted = replaced
+        if count == 0 then
+            break
+        end
+    end
+    return formatted
+end
+
 local function formatMoneyText(copper)
     local cpg = MB.Constants.COPPER_PER_GOLD
     local cps = MB.Constants.COPPER_PER_SILVER
@@ -13,7 +25,7 @@ local function formatMoneyText(copper)
     local remainderCopper = copper % cps
 
     if gold > 0 then
-        return string.format("%dg %02ds %02dc", gold, silver, remainderCopper)
+        return string.format("%sg %02ds %02dc", formatNumberWithCommas(gold), silver, remainderCopper)
     elseif silver > 0 then
         return string.format("%ds %02dc", silver, remainderCopper)
     end

@@ -49,6 +49,20 @@ function MB.ConfigWidgets:CreateSlider(parent, label, minValue, maxValue, step, 
         end
     end
 
+    local function sanitizeSliderValue(value)
+        value = tonumber(value)
+        if type(value) ~= "number" or value ~= value then
+            return minValue
+        end
+        if value == math.huge then
+            return maxValue
+        end
+        if value == -math.huge then
+            return minValue
+        end
+        return math.max(minValue, math.min(maxValue, value))
+    end
+
     slider:SetScript("OnValueChanged", function(_, value)
         updateValueText(value)
         if not slider._isRefreshing then
@@ -58,7 +72,11 @@ function MB.ConfigWidgets:CreateSlider(parent, label, minValue, maxValue, step, 
 
     slider.Refresh = function()
         slider._isRefreshing = true
-        slider:SetValue(onGet())
+        local value = sanitizeSliderValue(onGet())
+        local ok = pcall(slider.SetValue, slider, value)
+        if not ok then
+            slider:SetValue(minValue)
+        end
         updateValueText(slider:GetValue())
         slider._isRefreshing = false
     end

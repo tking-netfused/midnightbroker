@@ -31,6 +31,18 @@ function MB.Throttle:RunNow(bucketId)
     end
 end
 
+function MB.Throttle:SetInterval(bucketId, interval)
+    local bucket = self.buckets[bucketId]
+    if not bucket then
+        return false
+    end
+    if type(interval) ~= "number" or interval <= 0 then
+        return false
+    end
+    bucket.interval = interval
+    return true
+end
+
 function MB.Throttle:OnUpdate(elapsed)
     for _, bucket in pairs(self.buckets) do
         bucket.elapsed = bucket.elapsed + elapsed

@@ -59,6 +59,24 @@ MB.Constants = {
         { value = "time_then_date", label = "Time then date" },
         { value = "two_line", label = "Two-line (date above time)" },
     },
+    GOLD_FORMAT_OPTIONS = {
+        { value = "gsc", label = "Gold / Silver / Copper" },
+        { value = "g", label = "Gold only" },
+    },
+    TEXT_JUSTIFY_OPTIONS = {
+        { value = "LEFT", label = "Left" },
+        { value = "CENTER", label = "Center" },
+        { value = "RIGHT", label = "Right" },
+    },
+    ZONE_LAYOUT_OPTIONS = {
+        { value = "one_line", label = "One line (Zone - Subzone)" },
+        { value = "two_line", label = "Two line (Zone / Subzone)" },
+    },
+    MEMORY_TOOLTIP_OPTIONS = {
+        { value = "top10", label = "Top 10" },
+        { value = "top25", label = "Top 25" },
+        { value = "all", label = "All" },
+    },
     MIN_FRAME_WIDTH = 140,
     MIN_FRAME_WIDTH_BY_ELEMENT = {
         durability = 110,

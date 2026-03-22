@@ -24,10 +24,13 @@ function MB.BaseElement:Create(elementId, label)
     frame:SetClampedToScreen(true)
 
     frame.text = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    frame.text:SetPoint("LEFT", frame, "LEFT", 8, 0)
-    frame.text:SetPoint("RIGHT", frame, "RIGHT", -8, 0)
+    frame.text:SetPoint("TOPLEFT", frame, "TOPLEFT", 8, -4)
     frame.text:SetJustifyH("LEFT")
+    frame.text:SetJustifyV("TOP")
     frame.text:SetWordWrap(false)
+    frame.text:SetWidth(MB.Constants.MIN_FRAME_WIDTH - 16)
+    frame.measureText = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    frame.measureText:Hide()
 
     frame:SetScript("OnDragStart", function(self)
         if MB.DB:GetProfile().unlocked and config.enabled then
@@ -63,7 +66,11 @@ function MB.BaseElement:Create(elementId, label)
     end
 
     function frame:ApplyStyle()
-        MB.Style:Apply(self, MB.DB:GetElementConfig(self.elementId))
+        local cfg = MB.DB:GetElementConfig(self.elementId)
+        MB.Style:Apply(self, cfg)
+        self.text:SetJustifyH(cfg.textJustify or "LEFT")
+        self.measureText:SetFont(cfg.font or MB.Constants.DEFAULT_FONT, cfg.fontSize or 13, "OUTLINE")
+        self:UpdateHeight()
         self:UpdateWidth()
     end
 
@@ -83,7 +90,7 @@ function MB.BaseElement:Create(elementId, label)
         self:EnableMouse(shouldEnableMouse)
     end
 
-    function frame:SetDisplayText(value)
+    function frame:SetDisplayText(value, forceLayout)
         local config = MB.DB:GetElementConfig(self.elementId)
         local displayValue = value or "--"
         local text
@@ -92,9 +99,38 @@ function MB.BaseElement:Create(elementId, label)
         else
             text = tostring(displayValue)
         end
+        local isMultiline = string.find(text, "\n", 1, true) ~= nil
         self.currentText = value or "--"
+
+        if self._renderedText == text and self._renderedMultiline == isMultiline then
+            return
+        end
+
+        self.text:SetWordWrap(isMultiline)
+        self.text:SetMaxLines(isMultiline and 0 or 1)
         self.text:SetText(text)
-        self:UpdateWidth()
+        self._renderedText = text
+        self._renderedMultiline = isMultiline
+        if forceLayout or not self.skipAutoResize then
+            self:UpdateHeight()
+            self:UpdateWidth()
+        end
+    end
+
+    function frame:UpdateHeight()
+        if not self.text then
+            return
+        end
+        local textValue = self.text:GetText() or ""
+        local lineCount = 1
+        if textValue ~= "" then
+            lineCount = 1 + select(2, string.gsub(textValue, "\n", ""))
+        end
+        local _, fontSize = self.text:GetFont()
+        fontSize = type(fontSize) == "number" and fontSize or 13
+        local lineHeight = math.max(12, fontSize + 2)
+        local paddedHeight = (lineCount * lineHeight) + 8
+        self:SetHeight(math.max(24, paddedHeight))
     end
 
     function frame:UpdateWidth()
@@ -102,20 +138,32 @@ function MB.BaseElement:Create(elementId, label)
             return
         end
         local config = MB.DB:GetElementConfig(self.elementId)
-        local measuredTextWidth
-        if self.text.GetUnboundedStringWidth then
-            measuredTextWidth = self.text:GetUnboundedStringWidth()
-        else
-            measuredTextWidth = self.text:GetStringWidth()
+        local measuredTextWidth = 0
+        local fullText = self.text:GetText() or ""
+        local hasAnyLine = false
+
+        -- Measure each line independently so multiline strings size to the widest line.
+        for line in string.gmatch(fullText .. "\n", "(.-)\n") do
+            hasAnyLine = true
+            self.measureText:SetText(line)
+            local lineWidth = self.measureText:GetStringWidth() or 0
+            if lineWidth > measuredTextWidth then
+                measuredTextWidth = lineWidth
+            end
         end
-        measuredTextWidth = measuredTextWidth or 0
-        local paddedWidth = measuredTextWidth + 20
+
+        if not hasAnyLine then
+            measuredTextWidth = 0
+        end
+
+        local paddedWidth = measuredTextWidth + 24
         local elementMinWidth = MB.Constants.MIN_FRAME_WIDTH_BY_ELEMENT
             and MB.Constants.MIN_FRAME_WIDTH_BY_ELEMENT[self.elementId]
             or MB.Constants.MIN_FRAME_WIDTH
         local minWidth = config.showLabel and elementMinWidth or 70
         local width = clamp(paddedWidth, minWidth, MB.Constants.MAX_FRAME_WIDTH)
         self:SetWidth(width)
+        self.text:SetWidth(math.max(1, width - 16))
     end
 
     frame:ApplyPosition()

@@ -9,9 +9,9 @@ MidnightBroker is a Retail-focused World of Warcraft addon that provides:
 ## Features
 
 - Displays:
-  - Current date + time (Time element)
+  - Current date + time (Date-Time element)
   - Zone and subzone
-  - Player coordinates
+  - Player coordinates (configurable precision: 0-2 decimals)
   - Durability
   - Total addon memory usage
   - Gold
@@ -22,7 +22,7 @@ MidnightBroker is a Retail-focused World of Warcraft addon that provides:
   - Enabled/disabled
   - Movable when unlocked
   - Position persistent across reloads
-  - Font, font size, text color, background color, border color, alpha, and scale
+  - Font, font size, text justification, text color, background color, border color, opacity, and scale
   - Optional label/title visibility per element
 - Graceful fallback when `LibDataBroker-1.1` is not available
 
@@ -39,7 +39,6 @@ MidnightBroker is a Retail-focused World of Warcraft addon that provides:
 - `/mb options` - open the options panel
 - `/mb lock` - lock display elements
 - `/mb unlock` - unlock display elements for dragging
-- `/mb toggle <time|zone|coords|durability|memory>` - toggle one element
 - `/mb toggle <time|zone|coords|durability|memory|gold|fps|latency>` - toggle one element
 - `/mb reset <time|zone|coords|durability|memory|gold|fps|latency|all>` - reset position(s)
 - `/mb resetstyle <time|zone|coords|durability|memory|gold|fps|latency|all>` - reset style/color settings only
@@ -47,14 +46,22 @@ MidnightBroker is a Retail-focused World of Warcraft addon that provides:
 ## Options UX Notes
 
 - Font selection uses a built-in dropdown of WoW font choices (no external font library required).
-- Font Size, Scale, and Alpha sliders display their current numeric values while adjusting.
+- Text justification supports Left, Center, or Right per selected element.
+- Font Size, Scale, and Opacity sliders display their current numeric values while adjusting.
 - Label visibility can be toggled per selected element.
 - Background and border visibility can be toggled per selected element.
 - Element frame width auto-adjusts to content length (for example dynamic zone/subzone text), within safe min/max limits.
 - Time element includes preset dropdowns for Date Format, Time Format, and Date/Time Layout.
+- Coordinates element includes sliders for decimal precision (0-2) and moving update interval (0.05s to 1.0s), with a slower idle refresh to reduce churn.
+- Coordinates updates are movement-aware: selected interval applies while moving, with lightweight idle behavior to reduce memory churn.
+- Gold element includes a format dropdown (Gold/Silver/Copper or Gold only), with comma-grouped large gold values.
+- Zone element includes a layout dropdown (single-line or two-line Zone/Subzone).
+- Memory hover tooltip supports entry filters (Top 10, Top 25, or All).
+- One-line and two-line text layouts auto-resize frame width/height to avoid clipping.
 - The single LibDataBroker text also includes Gold, FPS, and Latency.
 - Broker tooltip shows Latency in `Home/World` format.
 - Hovering the Memory standalone element shows a tooltip with loaded addons and current per-addon memory usage.
+- Memory tooltip filter supports Top 10, Top 25, or All loaded addons.
 - Hovering the Latency standalone element shows a tooltip with separate Home and World latency values.
 - Hovering the Durability standalone element shows per-item durability details for equipped gear.
 

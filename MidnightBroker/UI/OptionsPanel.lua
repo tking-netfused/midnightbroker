@@ -61,6 +61,50 @@ local function buildDateTimeLayoutOptions()
     return options
 end
 
+local function buildGoldFormatOptions()
+    local options = {}
+    for _, option in ipairs(MB.Constants.GOLD_FORMAT_OPTIONS or {}) do
+        table.insert(options, {
+            value = option.value,
+            label = option.label,
+        })
+    end
+    return options
+end
+
+local function buildZoneLayoutOptions()
+    local options = {}
+    for _, option in ipairs(MB.Constants.ZONE_LAYOUT_OPTIONS or {}) do
+        table.insert(options, {
+            value = option.value,
+            label = option.label,
+        })
+    end
+    return options
+end
+
+local function buildTextJustifyOptions()
+    local options = {}
+    for _, option in ipairs(MB.Constants.TEXT_JUSTIFY_OPTIONS or {}) do
+        table.insert(options, {
+            value = option.value,
+            label = option.label,
+        })
+    end
+    return options
+end
+
+local function buildMemoryTooltipOptions()
+    local options = {}
+    for _, option in ipairs(MB.Constants.MEMORY_TOOLTIP_OPTIONS or {}) do
+        table.insert(options, {
+            value = option.value,
+            label = option.label,
+        })
+    end
+    return options
+end
+
 local function getElementConfig()
     return MB.DB:GetElementConfig(MB.OptionsPanel.currentElement)
 end
@@ -277,6 +321,19 @@ function MB.OptionsPanel:Initialize()
         -292
     )
 
+    local textJustifyDropdown = MB.ConfigWidgets:CreateDropdown(
+        content,
+        "Text Justification",
+        220,
+        buildTextJustifyOptions(),
+        function() return getElementConfig().textJustify end,
+        function(value)
+            getElementConfig().textJustify = value
+            refreshElementVisuals()
+        end,
+        -348
+    )
+
     local dateFormatDropdown = MB.ConfigWidgets:CreateDropdown(
         content,
         "Date Format",
@@ -287,7 +344,7 @@ function MB.OptionsPanel:Initialize()
             getElementConfig().dateFormat = value
             refreshElementVisuals()
         end,
-        -348
+        -404
     )
 
     local timeFormatDropdown = MB.ConfigWidgets:CreateDropdown(
@@ -300,7 +357,7 @@ function MB.OptionsPanel:Initialize()
             getElementConfig().timeFormat = value
             refreshElementVisuals()
         end,
-        -404
+        -460
     )
 
     local dateTimeLayoutDropdown = MB.ConfigWidgets:CreateDropdown(
@@ -313,7 +370,74 @@ function MB.OptionsPanel:Initialize()
             getElementConfig().dateTimeLayout = value
             refreshElementVisuals()
         end,
-        -460
+        -516
+    )
+
+    local goldFormatDropdown = MB.ConfigWidgets:CreateDropdown(
+        content,
+        "Gold Format",
+        220,
+        buildGoldFormatOptions(),
+        function() return getElementConfig().goldFormat end,
+        function(value)
+            getElementConfig().goldFormat = value
+            refreshElementVisuals()
+        end,
+        -576
+    )
+
+    local zoneLayoutDropdown = MB.ConfigWidgets:CreateDropdown(
+        content,
+        "Zone Layout",
+        220,
+        buildZoneLayoutOptions(),
+        function() return getElementConfig().zoneLayout end,
+        function(value)
+            getElementConfig().zoneLayout = value
+            refreshElementVisuals()
+        end,
+        -632
+    )
+
+    local memoryTooltipDropdown = MB.ConfigWidgets:CreateDropdown(
+        content,
+        "Memory Tooltip Entries",
+        220,
+        buildMemoryTooltipOptions(),
+        function() return getElementConfig().memoryTooltipMode end,
+        function(value)
+            getElementConfig().memoryTooltipMode = value
+            refreshElementVisuals()
+        end,
+        -688
+    )
+
+    local coordsDecimalsSlider = MB.ConfigWidgets:CreateSlider(
+        content,
+        "Coordinates Decimals",
+        0,
+        2,
+        1,
+        function() return MB.DB:GetElementConfig("coords").coordsDecimals end,
+        function(value)
+            MB.DB:GetElementConfig("coords").coordsDecimals = math.floor(value + 0.5)
+            refreshElementVisuals()
+        end,
+        -744
+    )
+
+    local coordsUpdateIntervalSlider = MB.ConfigWidgets:CreateSlider(
+        content,
+        "Coordinates Moving Update Interval (seconds)",
+        0.05,
+        1.0,
+        0.05,
+        function() return MB.DB:GetElementConfig("coords").coordsUpdateInterval end,
+        function(value)
+            MB.DB:GetElementConfig("coords").coordsUpdateInterval = value
+            refreshElementVisuals()
+        end,
+        -800
     )
 
     local fontSizeSlider = MB.ConfigWidgets:CreateSlider(
@@ -327,7 +451,7 @@ function MB.OptionsPanel:Initialize()
             getElementConfig().fontSize = math.floor(value + 0.5)
             refreshElementVisuals()
         end,
-        -520
+        -856
     )
 
     local scaleSlider = MB.ConfigWidgets:CreateSlider(
@@ -341,12 +465,12 @@ function MB.OptionsPanel:Initialize()
             getElementConfig().scale = value
             refreshElementVisuals()
         end,
-        -576
+        -912
     )
 
     local alphaSlider = MB.ConfigWidgets:CreateSlider(
         content,
-        "Alpha",
+        "Opacity",
         0.1,
         1.0,
         0.05,
@@ -355,7 +479,7 @@ function MB.OptionsPanel:Initialize()
             getElementConfig().alpha = value
             refreshElementVisuals()
         end,
-        -632
+        -968
     )
 
     local textColorButton = MB.ConfigWidgets:CreateColorButton(
@@ -366,7 +490,7 @@ function MB.OptionsPanel:Initialize()
             getElementConfig().textColor = color
             refreshElementVisuals()
         end,
-        -688
+        -1024
     )
 
     local bgColorButton = MB.ConfigWidgets:CreateColorButton(
@@ -377,7 +501,7 @@ function MB.OptionsPanel:Initialize()
             getElementConfig().backgroundColor = color
             refreshElementVisuals()
         end,
-        -718
+        -1054
     )
 
     local borderColorButton = MB.ConfigWidgets:CreateColorButton(
@@ -388,7 +512,7 @@ function MB.OptionsPanel:Initialize()
             getElementConfig().borderColor = color
             refreshElementVisuals()
         end,
-        -748
+        -1084
     )
 
     table.insert(self.controls, elementDropdown)
@@ -399,9 +523,15 @@ function MB.OptionsPanel:Initialize()
     table.insert(self.controls, showBorderCheck)
     table.insert(self.controls, resetPosButton)
     table.insert(self.controls, fontDropdown)
+    table.insert(self.controls, textJustifyDropdown)
     table.insert(self.controls, dateFormatDropdown)
     table.insert(self.controls, timeFormatDropdown)
     table.insert(self.controls, dateTimeLayoutDropdown)
+    table.insert(self.controls, goldFormatDropdown)
+    table.insert(self.controls, zoneLayoutDropdown)
+    table.insert(self.controls, memoryTooltipDropdown)
+    table.insert(self.controls, coordsDecimalsSlider)
+    table.insert(self.controls, coordsUpdateIntervalSlider)
     table.insert(self.controls, fontSizeSlider)
     table.insert(self.controls, scaleSlider)
     table.insert(self.controls, alphaSlider)
@@ -417,6 +547,7 @@ function MB.OptionsPanel:Initialize()
     table.insert(self.flowControls, { control = showBorderCheck })
     table.insert(self.flowControls, { control = resetPosButton })
     table.insert(self.flowControls, { control = fontDropdown })
+    table.insert(self.flowControls, { control = textJustifyDropdown })
     table.insert(self.flowControls, {
         control = dateFormatDropdown,
         isVisible = function() return MB.OptionsPanel.currentElement == "time" end,
@@ -428,6 +559,26 @@ function MB.OptionsPanel:Initialize()
     table.insert(self.flowControls, {
         control = dateTimeLayoutDropdown,
         isVisible = function() return MB.OptionsPanel.currentElement == "time" end,
+    })
+    table.insert(self.flowControls, {
+        control = goldFormatDropdown,
+        isVisible = function() return MB.OptionsPanel.currentElement == "gold" end,
+    })
+    table.insert(self.flowControls, {
+        control = zoneLayoutDropdown,
+        isVisible = function() return MB.OptionsPanel.currentElement == "zone" end,
+    })
+    table.insert(self.flowControls, {
+        control = memoryTooltipDropdown,
+        isVisible = function() return MB.OptionsPanel.currentElement == "memory" end,
+    })
+    table.insert(self.flowControls, {
+        control = coordsDecimalsSlider,
+        isVisible = function() return MB.OptionsPanel.currentElement == "coords" end,
+    })
+    table.insert(self.flowControls, {
+        control = coordsUpdateIntervalSlider,
+        isVisible = function() return MB.OptionsPanel.currentElement == "coords" end,
     })
     table.insert(self.flowControls, { control = fontSizeSlider })
     table.insert(self.flowControls, { control = scaleSlider })

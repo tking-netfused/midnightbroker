@@ -3,10 +3,13 @@ local _, MB = ...
 local ZoneElement = {}
 MB.elements.zone = ZoneElement
 
-local function formatZone()
+local function formatZone(layoutMode)
     local zone = GetRealZoneText() or GetZoneText() or "Unknown"
     local subZone = GetSubZoneText() or ""
     if subZone ~= "" and subZone ~= zone then
+        if layoutMode == "two_line" then
+            return string.format("%s\n%s", zone, subZone)
+        end
         return string.format("%s - %s", zone, subZone)
     end
     return zone
@@ -16,7 +19,8 @@ function ZoneElement:Create()
     local frame = MB.BaseElement:Create("zone", "Zone")
 
     function frame:Refresh()
-        self:SetDisplayText(formatZone())
+        local config = MB.DB:GetElementConfig("zone")
+        self:SetDisplayText(formatZone(config.zoneLayout))
     end
 
     local events = {

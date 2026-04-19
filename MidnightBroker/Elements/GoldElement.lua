@@ -40,7 +40,8 @@ function GoldElement:Create()
 
     function frame:Refresh()
         local config = MB.DB:GetElementConfig("gold")
-        self:SetDisplayText(formatGold(GetMoney() or 0, config.goldFormat))
+        local prefix = config.showIcon and "|TInterface\\MoneyFrame\\UI-GoldIcon:14:14:0:2|t" or ""
+        self:SetDisplayText(prefix .. formatGold(GetMoney() or 0, config.goldFormat))
     end
 
     MB.Events:Register("PLAYER_MONEY", "GOLD_ELEMENT_MONEY", function()

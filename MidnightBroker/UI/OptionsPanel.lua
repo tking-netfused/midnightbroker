@@ -590,7 +590,7 @@ function MB.OptionsPanel:Initialize()
     if Settings and Settings.RegisterCanvasLayoutCategory and Settings.RegisterAddOnCategory then
         local category = Settings.RegisterCanvasLayoutCategory(panel, "MidnightBroker")
         Settings.RegisterAddOnCategory(category)
-        -- Retail 120001: OpenToCategory expects a numeric category ID.
+        -- Retail 120005: OpenToCategory expects a numeric category ID.
         local categoryId = category.GetID and category:GetID() or nil
         if type(categoryId) == "number" then
             self.categoryId = categoryId

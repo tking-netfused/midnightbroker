@@ -94,7 +94,7 @@ Recovery tip:
 
 ## API Assumptions / Notes
 
-- TOC `Interface` currently targets modern Retail (`120001`); bump as needed per patch.
+- TOC `Interface` currently targets modern Retail (`120005`, patch 12.0.5); bump as needed per patch.
 - Coordinates use `C_Map.GetBestMapForUnit` and `C_Map.GetPlayerMapPosition`.
   - If those APIs change return shape in a future build, adjust `Elements/CoordsElement.lua`.
 - Memory usage prefers `C_AddOns` API with fallback to legacy global APIs.

@@ -373,6 +373,18 @@ function MB.OptionsPanel:Initialize()
         -516
     )
 
+    local showIconCheck = MB.ConfigWidgets:CreateCheckbox(
+        content,
+        "Show icon",
+        "Displays a small icon before the value.",
+        function() return getElementConfig().showIcon end,
+        function(value)
+            getElementConfig().showIcon = value and true or false
+            refreshElementVisuals()
+        end,
+        -404
+    )
+
     local goldFormatDropdown = MB.ConfigWidgets:CreateDropdown(
         content,
         "Gold Format",
@@ -527,6 +539,7 @@ function MB.OptionsPanel:Initialize()
     table.insert(self.controls, dateFormatDropdown)
     table.insert(self.controls, timeFormatDropdown)
     table.insert(self.controls, dateTimeLayoutDropdown)
+    table.insert(self.controls, showIconCheck)
     table.insert(self.controls, goldFormatDropdown)
     table.insert(self.controls, zoneLayoutDropdown)
     table.insert(self.controls, memoryTooltipDropdown)
@@ -545,6 +558,10 @@ function MB.OptionsPanel:Initialize()
     table.insert(self.flowControls, { control = showLabelCheck })
     table.insert(self.flowControls, { control = showBackgroundCheck })
     table.insert(self.flowControls, { control = showBorderCheck })
+    table.insert(self.flowControls, {
+        control = showIconCheck,
+        isVisible = function() return MB.OptionsPanel.currentElement == "gold" end,
+    })
     table.insert(self.flowControls, { control = resetPosButton })
     table.insert(self.flowControls, { control = fontDropdown })
     table.insert(self.flowControls, { control = textJustifyDropdown })

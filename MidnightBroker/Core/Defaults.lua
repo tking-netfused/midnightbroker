@@ -121,6 +121,7 @@ MB.Defaults = {
                 showLabel = true,
                 showBackground = true,
                 showBorder = true,
+                showIcon = false,
                 goldFormat = "gsc",
                 textColor = { r = 1, g = 0.82, b = 0.2, a = 1 },
                 backgroundColor = { r = 0, g = 0, b = 0, a = 0.45 },

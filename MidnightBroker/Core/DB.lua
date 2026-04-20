@@ -133,6 +133,7 @@ function MB.DB:SanitizeElementStyle(elementId)
         config.coordsDecimals = type(config.coordsDecimals) == "number" and clamp(math.floor(config.coordsDecimals + 0.5), 0, 2) or defaults.coordsDecimals
         config.coordsUpdateInterval = type(config.coordsUpdateInterval) == "number" and clamp(config.coordsUpdateInterval, 0.05, 1.0) or defaults.coordsUpdateInterval
     elseif elementId == "gold" then
+        config.showIcon = sanitizeBoolean(config.showIcon, defaults.showIcon)
         if not isOptionValue(MB.Constants.GOLD_FORMAT_OPTIONS, config.goldFormat) then
             config.goldFormat = defaults.goldFormat
         end
@@ -172,6 +173,9 @@ function MB.DB:ResetElementStyle(elementId)
     end
     if defaults.coordsUpdateInterval then
         config.coordsUpdateInterval = defaults.coordsUpdateInterval
+    end
+    if defaults.showIcon ~= nil then
+        config.showIcon = defaults.showIcon
     end
     config.alpha = defaults.alpha
     config.scale = defaults.scale

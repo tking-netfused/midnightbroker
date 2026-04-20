@@ -55,6 +55,7 @@ MidnightBroker is a Retail-focused World of Warcraft addon that provides:
 - Coordinates element includes sliders for decimal precision (0-2) and moving update interval (0.05s to 1.0s), with a slower idle refresh to reduce churn.
 - Coordinates updates are movement-aware: selected interval applies while moving, with lightweight idle behavior to reduce memory churn.
 - Gold element includes a format dropdown (Gold/Silver/Copper or Gold only), with comma-grouped large gold values.
+- Gold element also includes an optional coin icon toggle (`Show icon`), disabled by default.
 - Zone element includes a layout dropdown (single-line or two-line Zone/Subzone).
 - Memory hover tooltip supports entry filters (Top 10, Top 25, or All).
 - One-line and two-line text layouts auto-resize frame width/height to avoid clipping.

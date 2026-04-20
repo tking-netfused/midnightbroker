@@ -1,4 +1,4 @@
-## Interface: 120005
+## Interface: 120001
 ## Title: MidnightBroker
 ## Notes: Broker + standalone info elements for date/time, zone, coords, durability, memory, gold, fps, and latency.
 ## Author: MidnightBroker Team

@@ -43,11 +43,7 @@ local function getRoundedCoords(decimals)
     return mapId, roundTo(rawX, decimals), roundTo(rawY, decimals)
 end
 
-local function isPlayerInMotion()
-    local speed = GetUnitSpeed("player") or 0
-    if speed > 0 then
-        return true
-    end
+local function isPlayerInMotion(lastKnownMoving)
     if UnitOnTaxi and UnitOnTaxi("player") then
         return true
     end
@@ -57,7 +53,7 @@ local function isPlayerInMotion()
     if IsFalling and IsFalling() then
         return true
     end
-    return false
+    return lastKnownMoving and true or false
 end
 
 function CoordsElement:Create()
@@ -77,7 +73,7 @@ function CoordsElement:Create()
 
     function frame:Refresh()
         local config = MB.DB:GetElementConfig("coords")
-        self.isMoving = isPlayerInMotion()
+        self.isMoving = isPlayerInMotion(self.isMoving)
         local decimals = clampDecimals(config.coordsDecimals)
         local shouldForceLayout = self._lastRenderedText == nil
 

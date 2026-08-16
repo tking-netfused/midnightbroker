@@ -1,8 +1,8 @@
-## Interface: 120007
+## Interface: 120100
 ## Title: MidnightBroker
 ## Notes: Broker + standalone info elements for date/time, zone, coords, durability, memory, gold, fps, and latency.
 ## Author: MidnightBroker Team
-## Version: 1.0.2
+## Version: 1.0.3
 ## SavedVariables: MidnightBrokerDB
 
 Core/Bootstrap.lua
